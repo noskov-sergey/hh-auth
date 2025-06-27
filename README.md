@@ -1,2 +1,2 @@
 # hh-auth
-service to update access token for api.hh.ru
+service to work with access token for api.hh.ru

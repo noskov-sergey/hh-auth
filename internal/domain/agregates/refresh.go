@@ -8,44 +8,44 @@ import (
 )
 
 var (
-	ErrAuthorizationValidate = errors.New("authorization validation error")
+	ErrRefreshValidate = errors.New("refresh response validation error")
 )
 
-type Authorization struct {
+type Refresh struct {
 	accessToken  domain.AccessToken
 	expiresIn    domain.ExpiresIn
 	refreshToken domain.RefreshToken
 }
 
-type AuthorizationParams struct {
+type RefreshParams struct {
 	AccessToken  domain.AccessToken
 	ExpiresIn    domain.ExpiresIn
 	RefreshToken domain.RefreshToken
 }
 
-func NewAuthorization(p AuthorizationParams) (*Authorization, error) {
+func NewRefreshResponse(p RefreshParams) (*Refresh, error) {
 	err := errors.Join(validateAccessToken(p.AccessToken), validateRefreshToken(p.RefreshToken),
 		validateExpired(p.ExpiresIn))
 	if err != nil {
 		return nil, errors.Join(ErrAuthorizationValidate, err)
 	}
 
-	return &Authorization{
+	return &Refresh{
 		accessToken:  p.AccessToken,
 		expiresIn:    p.ExpiresIn,
 		refreshToken: p.RefreshToken,
 	}, nil
 }
 
-func (a *Authorization) AccessToken() domain.AccessToken {
+func (a *Refresh) AccessToken() domain.AccessToken {
 	return a.accessToken
 }
 
-func (a *Authorization) ExpiresIn() domain.ExpiresIn {
+func (a *Refresh) ExpiresIn() domain.ExpiresIn {
 	return a.expiresIn
 }
 
-func (a *Authorization) RefreshToken() domain.RefreshToken {
+func (a *Refresh) RefreshToken() domain.RefreshToken {
 	return a.refreshToken
 }
 

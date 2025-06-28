@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS auth (
     refresh_token VARCHAR NOT NULL,
     expired_at TIMESTAMP NOT NULL,
     status token_status,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 -- +goose StatementEnd
 

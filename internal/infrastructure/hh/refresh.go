@@ -19,6 +19,7 @@ func (c *Client) RefreshAccessToken(ctx context.Context, rToken domain.RefreshTo
 		return nil, fmt.Errorf("failed to parse url: %w", err)
 	}
 	uri.Path = pathToken
+	uri.Scheme = schema
 
 	data := url.Values{}
 	data.Set(grantType, c.grantType)
@@ -36,9 +37,18 @@ func (c *Client) RefreshAccessToken(ctx context.Context, rToken domain.RefreshTo
 
 	switch resp.StatusCode {
 	case http.StatusBadRequest:
-		return nil, fmt.Errorf("bad request: %s", resp.Status)
+		description, err := withError(resp.Body)
+		if err != nil {
+			return nil, fmt.Errorf("with error, parse bad status: %w", err)
+		}
+		return nil, fmt.Errorf("bad request: %s", description)
 	case http.StatusForbidden:
-		return nil, fmt.Errorf("forbidden: %s", resp.Status)
+		description, err := withError(resp.Body)
+		if err != nil {
+			return nil, fmt.Errorf("with error, parse bad status: %w", err)
+		}
+		return nil, fmt.Errorf("forbidden: %s", description)
+	default:
 	}
 
 	r, err := io.ReadAll(resp.Body)
@@ -53,4 +63,24 @@ func (c *Client) RefreshAccessToken(ctx context.Context, rToken domain.RefreshTo
 	}
 
 	return responseToRefresh(got)
+}
+
+func withError(body io.ReadCloser) (string, error) {
+	r, err := io.ReadAll(body)
+	if err != nil {
+		return "", fmt.Errorf("failed to read body: %w", err)
+	}
+
+	var e ErrorResponse
+	err = json.Unmarshal(r, &e)
+	if err != nil {
+		return "", fmt.Errorf("failed to unmarshal response: %w", err)
+	}
+
+	switch e.Description {
+	case "token not expired":
+		return "", ErrTokenNotExpired
+	}
+
+	return fmt.Sprintf("error: %s, description: %s", e.Error, e.Description), nil
 }

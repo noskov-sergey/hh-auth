@@ -42,9 +42,11 @@ func NewAuthorization(p AuthorizationParams) (*Authorization, error) {
 	}
 
 	return &Authorization{
+		id:           p.ID,
 		accessToken:  p.AccessToken,
 		expired:      p.Expired,
 		refreshToken: p.RefreshToken,
+		createdAt:    p.Created,
 		status:       p.Status,
 	}, nil
 }
@@ -53,12 +55,16 @@ func (a *Authorization) AccessToken() domain.AccessToken {
 	return a.accessToken
 }
 
-func (a *Authorization) ExpiresIn() time.Time {
+func (a *Authorization) ExpiresAt() time.Time {
 	return a.expired
 }
 
 func (a *Authorization) RefreshToken() domain.RefreshToken {
 	return a.refreshToken
+}
+
+func (a *Authorization) Status() domain.Status {
+	return a.status
 }
 
 func validateAuthID(v ID) error {

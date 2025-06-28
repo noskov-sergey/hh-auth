@@ -7,7 +7,7 @@ import (
 
 type ErrorResponse struct {
 	Error       string `json:"error"`
-	Description string `json:"description"`
+	Description string `json:"error_description"`
 }
 
 type EntityRefreshResponse struct {

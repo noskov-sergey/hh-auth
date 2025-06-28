@@ -12,6 +12,10 @@ var statuses = map[Status]struct{}{
 
 type Status string
 
+func (s Status) String() string {
+	return string(s)
+}
+
 func (s Status) IsValid() bool {
 	if len(s) == 0 {
 		return false

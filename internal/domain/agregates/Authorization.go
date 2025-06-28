@@ -51,6 +51,10 @@ func NewAuthorization(p AuthorizationParams) (*Authorization, error) {
 	}, nil
 }
 
+func (a *Authorization) ID() ID {
+	return a.id
+}
+
 func (a *Authorization) AccessToken() domain.AccessToken {
 	return a.accessToken
 }

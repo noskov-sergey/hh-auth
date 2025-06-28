@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package auth_v1;
+
+option go_package = "github.com/noskov-sergey/auth/pkg/auth_v1;auth_v1";
+
+service AuthV1 {
+  rpc Update(UpdateRequest) returns (UpdateResponse);
+}
+
+message UpdateRequest {
+  string access_token = 1;
+}
+
+message UpdateResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  int64 expires_in = 3;
+}
